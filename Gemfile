@@ -63,3 +63,6 @@ gem 'jquery-turbolinks'
 #chat function
 gem 'private_pub'
 gem 'thin'
+
+#deployment
+gem 'unicorn'
