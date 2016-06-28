@@ -1,13 +1,24 @@
-<% content_for :top_content do %>
-  <div class="jumbotron">
-    <div class="container">
-      <h1>Welcome!</h1>
-      <p>Register to get started.</p>
-      <p>
-        <%= link_to 'Register', new_user_registration_path, class: 'btn btn-primary btn-lg' %>
-      </p>
-    </div>
-  </div>
+<%if !user_signed_in? %>
+	<% content_for :top_content do %>
+	  <div class="jumbotron">
+	    <div class="container">
+	      <h1>Welcome!</h1>
+	      <p>Register to get started.</p>
+	      <p>
+	        <%= link_to 'Register', new_user_registration_path, class: 'btn btn-primary btn-lg' %>
+	      </p>
+	    </div>
+	  </div>
+	<% end %>
+<% else %>
+	<% content_for :top_content do %>
+	  <div class="jumbotron">
+	    <div class="container">
+	      <h1>Welcome!</h1>
+	      <p>Thanks for choosing KevChat ;)</p>
+	    </div>
+	  </div>
+	<% end %>
 <% end %>
 
 <% if user_signed_in? %>
@@ -22,3 +33,27 @@
 	    </tr>
 	<% end %>
 <% end %>
+
+
+
+<h4>Conversations history</h4>
+<% history = Conversation.where(sender_id: current_user.id) + Conversation.where(recipient_id: current_user.id)%>
+<ul class="media-list">
+	<% history.each do |conversation|%>
+		<% if !(conversation.recipient_id == conversation.sender_id) && !conversation.messages.first.nil? %>
+
+		<li class="media">
+			<img class="media-object pull-left" src="http://placehold.it/50x50" alt="50x50" />
+			<div class="media-body">
+				<a class="start-conversation" data-sid= <%=current_user.id%> data-rip = <%=conversation.recipient_id + conversation.sender_id - current_user.id%> < href="/conversations/<%=conversation.id%>">
+						<% if conversation.recipient_id == current_user.id %>
+							<%= User.find(conversation.sender_id).name%>
+						<% else %>
+							<%= User.find(conversation.recipient_id).name%>
+						<% end %>
+				</a>
+			</div>
+		</li>
+		<% end %>
+	<% end %>
+</ul>
